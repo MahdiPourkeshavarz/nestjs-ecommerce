@@ -35,6 +35,7 @@ const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)/;
 
 @Schema({ timestamps: true })
 export class User {
+  [x: string]: any;
   @Prop({ type: String, required: true, trim: true })
   firstname: string;
 
