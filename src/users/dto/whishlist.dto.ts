@@ -16,7 +16,7 @@ import {
 export class WishlistItemDto {
   @IsString()
   @IsNotEmpty()
-  _id: string;
+  id: string;
 
   @IsString()
   @IsNotEmpty()

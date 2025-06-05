@@ -15,14 +15,14 @@ import {
 } from '@nestjs/common';
 import { PaginatedUsersResult, UsersService } from './users.service';
 import { User } from './schema/users.schema';
-import { CreateUserDto } from './dto/create-user.dto';
 import { QueryUserDto } from './dto/query-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDto, UserRole } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
+import { AuthCredentialsSignupDto } from 'src/auth/dto/auth-credentials.dto';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('users')
-@UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -30,19 +30,30 @@ export class UsersController {
   @UsePipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
       transform: true,
     }),
   )
   async create(
-    @Body() createUserDto: CreateUserDto,
+    @Body() createUserDto: AuthCredentialsSignupDto,
+  ): Promise<{ status: string; data: { user: User } }> {
+    const user = await this.usersService.create(createUserDto);
+    return { status: 'success', data: { user } };
+  }
+
+  @Post('/admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async adminCreateUser(
+    @Body() createUserDto: AuthCredentialsSignupDto,
   ): Promise<{ status: string; data: { user: User } }> {
     const user = await this.usersService.create(createUserDto);
     return { status: 'success', data: { user } };
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
   @UsePipes(
     new ValidationPipe({
       transform: true,
@@ -82,6 +93,7 @@ export class UsersController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   async remove(
     @Param('id') id: string,
   ): Promise<{ status: string; data: { user: User } }> {

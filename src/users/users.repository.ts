@@ -4,16 +4,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schema/users.schema';
 import { Model, Query, QueryOptions } from 'mongoose';
-import { CreateUserDto } from './dto/create-user.dto';
 import { FilterQuery } from 'mongoose';
 import { QueryUserDto } from './dto/query-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthCredentialsSignupDto } from 'src/auth/dto/auth-credentials.dto';
 
 @Injectable()
 export class UsersRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async create(createUserDto: CreateUserDto): Promise<UserDocument> {
+  async create(createUserDto: AuthCredentialsSignupDto): Promise<UserDocument> {
     const newUser = new this.userModel(createUserDto);
     return newUser.save();
   }
@@ -40,6 +40,23 @@ export class UsersRepository {
       query = query.select(select);
     }
     return query.exec();
+  }
+
+  async updateUserRefreshToken(
+    userId: string,
+    hashedRefreshToken: string | null,
+  ): Promise<void> {
+    if (hashedRefreshToken) {
+      await this.userModel.updateOne(
+        { id: userId },
+        { refreshToken: hashedRefreshToken },
+      );
+    } else {
+      await this.userModel.updateOne(
+        { id: userId },
+        { $unset: { refreshToken: 1 } },
+      );
+    }
   }
 
   async findAll(

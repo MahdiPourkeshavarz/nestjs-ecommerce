@@ -24,6 +24,10 @@ export enum UserRole {
 }
 
 export class UpdateUserDto {
+  @IsString()
+  @Type(() => String)
+  id: string;
+
   @IsOptional()
   @IsString()
   @Type(() => String)
@@ -38,7 +42,7 @@ export class UpdateUserDto {
   @IsString()
   @IsLowercase({ message: 'Username must be lowercase' })
   @Type(() => String)
-  username?: string; // Be careful allowing username updates due to uniqueness
+  username?: string;
 
   @IsOptional()
   @IsString()
@@ -46,7 +50,7 @@ export class UpdateUserDto {
   @Matches(passwordRegex, {
     message: 'Password must have at least one letter and one digit',
   })
-  password?: string; // Handle password updates carefully (e.g., current password check)
+  password?: string;
 
   @IsPhoneNumber('IR')
   @IsNotEmpty({ message: 'Phone number is required' })

@@ -1,16 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable prettier/prettier */
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 
-@Schema({ _id: false })
+@Schema({ id: false })
 export class WishlistItem {
-  @Prop({ type: MongooseSchema.Types.ObjectId, required: true })
-  _id: string;
-
   @Prop({ type: String, required: true })
   name: string;
 
@@ -33,7 +30,27 @@ export type UserDocument = User & Document;
 
 const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)/;
 
-@Schema({ timestamps: true })
+@Schema({
+  timestamps: true,
+  toJSON: {
+    virtuals: true,
+    transform: (doc, ret) => {
+      ret.id = ret._id.toString();
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    },
+  },
+  toObject: {
+    virtuals: true,
+    transform: (doc, ret) => {
+      ret.id = ret._id.toString();
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    },
+  },
+})
 export class User {
   [x: string]: any;
   @Prop({ type: String, required: true, trim: true })
@@ -52,7 +69,7 @@ export class User {
   username: string;
 
   @Prop({
-    type: Number,
+    type: String,
     required: true,
     minlength: [8, 'password must have 8 or more character'],
     select: false,
@@ -82,9 +99,6 @@ export class User {
     enum: { values: ['ADMIN', 'USER'], message: 'invalid role: ({VALUE})' },
   })
   role: string;
-
-  @Prop({ type: String, select: false })
-  refreshToken: string;
 }
 export const UserSchema = SchemaFactory.createForClass(User);
 

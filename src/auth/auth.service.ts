@@ -1,4 +1,6 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/require-await */
@@ -6,43 +8,66 @@
 
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { UsersRepository } from 'src/users/users.repository';
-import {
-  AuthCredentialsLoginDto,
-  AuthCredentialsSignupDto,
-} from './dto/auth-credentials.dto';
-import { JwtPayload } from 'jsonwebtoken';
-import { UserDocument } from 'src/users/schema/users.schema';
-import * as bcrypt from 'bcryptjs';
+import { AuthCredentialsLoginDto, UserRole } from './dto/auth-credentials.dto';
+import { User } from 'src/users/schema/users.schema';
+import { UsersService } from 'src/users/users.service';
+import { ConfigService } from '@nestjs/config';
+import { JwtPayload } from './jwt-payoad.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(UsersRepository)
-    private usersRepository: UsersRepository,
-    private jwtService: JwtService,
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
-  async signUp(
-    authCredentialsDto: AuthCredentialsSignupDto,
-  ): Promise<void | UserDocument> {
-    return this.usersRepository.create(authCredentialsDto);
-  }
-
-  async signIn(
-    authCredentialsDto: AuthCredentialsLoginDto,
-  ): Promise<{ accessToken: string }> {
+  async signIn(authCredentialsDto: AuthCredentialsLoginDto): Promise<{
+    accessToken: string;
+    refreshToken: string;
+    user: Partial<User>;
+  }> {
     const { username, password } = authCredentialsDto;
-    const user = await this.usersRepository.findOne({
-      where: { username: username },
-    });
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const payload: JwtPayload = { username };
-      const accessToken: string = await this.jwtService.sign(payload);
-      return { accessToken };
+
+    const user = await this.usersService.findByUsername(username);
+
+    if (user && (await user.comparePassword(password))) {
+      const payload: JwtPayload = {
+        username: user.username,
+        role: user.role as UserRole,
+        sub: user.id,
+      };
+      const accessToken: string = this.jwtService.sign(payload, {
+        secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
+        expiresIn: this.configService.get<string>(
+          'JWT_ACCESS_TOKEN_EXPIRES_IN',
+        ),
+      });
+
+      const refreshTokenPayload = { sub: user.username.toString() };
+      const refreshToken: string = this.jwtService.sign(refreshTokenPayload, {
+        secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+        expiresIn: this.configService.get<string>(
+          'JWT_REFRESH_TOKEN_EXPIRES_IN',
+        ),
+      });
+
+      await this.usersService.updateUserRefreshToken(
+        user.username.toString(),
+        refreshToken,
+      );
+
+      const userResponse: Partial<User> = {
+        id: user.id,
+        username: user.username,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        role: user.role,
+      };
+
+      return { accessToken, refreshToken, user: userResponse };
     } else {
-      throw new UnauthorizedException('please check your login credentials');
+      throw new UnauthorizedException('Please check your login credentials');
     }
   }
 }
