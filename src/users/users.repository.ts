@@ -90,7 +90,7 @@ export class UsersRepository {
       const sortBy = sort.split(',').join(' ');
       query = query.sort(sortBy);
     } else {
-      query = query.sort('-createdAt'); // Default sort
+      query = query.sort('-createdAt');
     }
 
     if (fields) {
