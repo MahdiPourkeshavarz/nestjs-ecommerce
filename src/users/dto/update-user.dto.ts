@@ -52,6 +52,7 @@ export class UpdateUserDto {
   })
   password?: string;
 
+  @IsOptional()
   @IsPhoneNumber('IR')
   @IsNotEmpty({ message: 'Phone number is required' })
   @Type(() => String)

@@ -156,7 +156,7 @@ export class UsersService {
       );
     }
 
-    const { password, refreshToken, ...result } = updatedUserDoc.toObject();
+    const { password, ...result } = updatedUserDoc.toObject();
     return result as User;
   }
 

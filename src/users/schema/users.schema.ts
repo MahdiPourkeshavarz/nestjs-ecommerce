@@ -53,15 +53,14 @@ const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)/;
 })
 export class User {
   [x: string]: any;
-  @Prop({ type: String, required: true, trim: true })
+  @Prop({ type: String, trim: true })
   firstname: string;
 
-  @Prop({ type: String, required: true, trim: true })
+  @Prop({ type: String, trim: true })
   lastname: string;
 
   @Prop({
     type: String,
-    required: true,
     unique: true,
     lowercase: true,
     trim: true,
@@ -70,7 +69,6 @@ export class User {
 
   @Prop({
     type: String,
-    required: true,
     minlength: [8, 'password must have 8 or more character'],
     select: false,
     validate: {
@@ -81,10 +79,10 @@ export class User {
   })
   password: string;
 
-  @Prop({ type: String, unique: true, required: true, trim: true })
+  @Prop({ type: String, unique: true, trim: true })
   phoneNumber: string;
 
-  @Prop({ type: String, required: true, trim: true })
+  @Prop({ type: String, trim: true })
   address: string;
 
   @Prop({
@@ -103,14 +101,27 @@ export class User {
 export const UserSchema = SchemaFactory.createForClass(User);
 
 UserSchema.pre<UserDocument>('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next();
-  }
-  try {
-    const salt = await bcrypt.genSalt(12);
-    this.password = await bcrypt.hash(this.password, salt);
-  } catch (error) {
-    next(error);
+  if (this.isModified('password')) {
+    if (typeof this.password === 'string' && this.password.length > 0) {
+      if (
+        this.password.startsWith('$2a$') ||
+        this.password.startsWith('$2b$') ||
+        this.password.startsWith('$2y$')
+      ) {
+        return next();
+      }
+      try {
+        const salt = await bcrypt.genSalt(12);
+        this.password = await bcrypt.hash(this.password, salt);
+        next();
+      } catch (error) {
+        next(error as Error);
+      }
+    } else {
+      next(new Error('Password was marked as modified but is invalid.'));
+    }
+  } else {
+    next();
   }
 });
 

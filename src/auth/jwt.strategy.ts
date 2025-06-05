@@ -31,10 +31,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!user) {
       throw new UnauthorizedException('User not found or token invalid.');
     }
-    return {
+
+    const userInfo = {
       userId: user.id,
       username: user.username,
       role: user.role,
     };
+
+    console.log(userInfo);
+    return userInfo;
   }
 }

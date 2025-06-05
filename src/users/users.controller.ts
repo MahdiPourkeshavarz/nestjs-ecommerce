@@ -52,7 +52,7 @@ export class UsersController {
   }
 
   @Get()
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @UsePipes(
     new ValidationPipe({

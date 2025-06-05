@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
@@ -112,7 +114,20 @@ export class UsersRepository {
       return null;
     }
 
-    Object.assign(user, updateUserDto);
+    let passwordIsBeingUpdated = false;
+    for (const key in updateUserDto) {
+      if (Object.prototype.hasOwnProperty.call(updateUserDto, key)) {
+        if (updateUserDto[key] !== undefined) {
+          if (key === 'password') {
+            user.password = updateUserDto[key];
+            passwordIsBeingUpdated = true;
+          } else {
+            (user as any)[key] = updateUserDto[key];
+          }
+        }
+      }
+    }
+
     return user.save({ validateBeforeSave: true, ...options });
   }
 
