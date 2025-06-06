@@ -13,16 +13,16 @@ import {
 import { SubCategoriesRepository } from './subcategory.repository';
 import slugify from 'slugify';
 import { CreateSubCategoryDto } from './dto/create-subcategory.dto';
-import {
-  SubCategory,
-  SubCategoryDocument,
-} from './schema/subcategories.schema';
+import { SubCategory } from './schema/subcategories.schema';
 import { UpdateSubCategoryDto } from './dto/update-subcategory.dto';
+import { CategoriesRepository } from 'src/categories/category.repository';
+import { FindAllResponse } from './models/findAll-response.model';
 
 @Injectable()
 export class SubCategoriesService {
   constructor(
     private readonly subcategoriesRepository: SubCategoriesRepository,
+    private readonly categoriesRepository: CategoriesRepository,
   ) {}
 
   private generateSlug(name: string): string {
@@ -33,113 +33,137 @@ export class SubCategoriesService {
     });
   }
 
-  async create(createCategoryDto: CreateSubCategoryDto): Promise<SubCategory> {
-    if (!createCategoryDto.slugname && createCategoryDto.name) {
-      createCategoryDto.slugname = this.generateSlug(createCategoryDto.name);
+  async create(
+    createSubCategoryDto: CreateSubCategoryDto,
+  ): Promise<SubCategory> {
+    const isCategoryExists = await this.categoriesRepository.findById(
+      createSubCategoryDto.category,
+    );
+    if (!isCategoryExists) {
+      throw new ConflictException('this category does not exists');
+    }
+
+    if (!createSubCategoryDto.slugname && createSubCategoryDto.name) {
+      createSubCategoryDto.slugname = this.generateSlug(
+        createSubCategoryDto.name,
+      );
     }
     if (
       (await this.subcategoriesRepository.exists({
-        name: createCategoryDto.name,
+        name: createSubCategoryDto.name,
       })) ||
       (await this.subcategoriesRepository.exists({
-        slugname: createCategoryDto.slugname,
+        slugname: createSubCategoryDto.slugname,
       }))
     ) {
-      throw new ConflictException('this category has already been created');
+      throw new ConflictException('this subcategory has already been created');
     }
 
     try {
-      const categoryDoc =
-        await this.subcategoriesRepository.create(createCategoryDto);
-      return categoryDoc.toObject() as SubCategory;
+      const subcategoryDoc =
+        await this.subcategoriesRepository.create(createSubCategoryDto);
+      return subcategoryDoc.toObject() as SubCategory;
     } catch (error) {
       throw new InternalServerErrorException(
-        'could not create category',
+        'could not create subcategory',
         error,
       );
     }
   }
 
-  async findAll(): Promise<SubCategory[]> {
-    const subcategoriesDocs: SubCategoryDocument[] =
-      await this.subcategoriesRepository.findAll();
+  async findAll(): Promise<FindAllResponse> {
+    const { subs, total } = await this.subcategoriesRepository.findAll();
 
-    return subcategoriesDocs.map((doc: SubCategoryDocument) => {
-      const plainCategoryObject = doc.toObject();
-      return plainCategoryObject as SubCategory;
+    const page = 1;
+    const limit = 10;
+    const totalPages = Math.ceil(total / limit);
+
+    const sanitizedSubCategories = subs.map((subDoc) => {
+      return subDoc.toObject();
     });
+
+    return {
+      status: 'success',
+      page: Number(page),
+      per_page: Number(limit),
+      total,
+      total_pages: totalPages,
+      data: { subcategories: sanitizedSubCategories as SubCategory[] },
+    };
   }
 
   async findOneById(id: string): Promise<SubCategory> {
-    const categoryDoc = await this.subcategoriesRepository.findById(id);
-    if (!categoryDoc) {
-      throw new NotFoundException(`Category with ID "${id}" not found`);
+    const subCategoryDoc = await this.subcategoriesRepository.findById(id);
+    if (!subCategoryDoc) {
+      throw new NotFoundException(`subcategory with ID "${id}" not found`);
     }
-    return categoryDoc.toObject() as SubCategory;
+    return subCategoryDoc.toObject() as SubCategory;
   }
 
   async update(
     id: string,
-    updateCategoryDto: UpdateSubCategoryDto,
+    updateSubCategoryDto: UpdateSubCategoryDto,
   ): Promise<SubCategory> {
-    const existingCategory = await this.subcategoriesRepository.findById(id);
-    if (!existingCategory) {
-      throw new NotFoundException('category not found');
+    const existingSubCategory = await this.subcategoriesRepository.findById(id);
+    if (!existingSubCategory) {
+      throw new NotFoundException('subcategory not found');
     }
-    if (updateCategoryDto.name && !updateCategoryDto.slugname) {
-      updateCategoryDto.slugname = this.generateSlug(updateCategoryDto.name);
-    } else if (updateCategoryDto.slugname) {
-      updateCategoryDto.slugname = this.generateSlug(
-        updateCategoryDto.slugname,
+    if (updateSubCategoryDto.name && !updateSubCategoryDto.slugname) {
+      updateSubCategoryDto.slugname = this.generateSlug(
+        updateSubCategoryDto.name,
+      );
+    } else if (updateSubCategoryDto.slugname) {
+      updateSubCategoryDto.slugname = this.generateSlug(
+        updateSubCategoryDto.slugname,
       );
     }
     if (
-      updateCategoryDto.name &&
-      updateCategoryDto.name !== existingCategory.name
+      updateSubCategoryDto.name &&
+      updateSubCategoryDto.name !== existingSubCategory.name
     ) {
       if (
         await this.subcategoriesRepository.exists({
-          name: updateCategoryDto.name,
-          id: { $ne: existingCategory.id },
+          name: updateSubCategoryDto.name,
+          id: { $ne: existingSubCategory.id },
         })
       ) {
         throw new ConflictException(
-          `Category with name "${updateCategoryDto.name}" already exists.`,
+          `Category with name "${updateSubCategoryDto.name}" already exists.`,
         );
       }
     }
     if (
-      updateCategoryDto.slugname &&
-      updateCategoryDto.slugname !== existingCategory.slugname
+      updateSubCategoryDto.slugname &&
+      updateSubCategoryDto.slugname !== existingSubCategory.slugname
     ) {
       if (
         await this.subcategoriesRepository.exists({
-          slug: updateCategoryDto.slugname,
-          id: { $ne: existingCategory.id },
+          slug: updateSubCategoryDto.slugname,
+          id: { $ne: existingSubCategory.id },
         })
       ) {
         throw new ConflictException(
-          `Category with slug "${updateCategoryDto.slugname}" already exists.`,
+          `subcategory with slug "${updateSubCategoryDto.slugname}" already exists.`,
         );
       }
     }
-    const updatedCategoryDoc = await this.subcategoriesRepository.update(
+    const updatedSubCategoryDoc = await this.subcategoriesRepository.update(
       id,
-      updateCategoryDto,
+      updateSubCategoryDto,
     );
-    if (!updatedCategoryDoc) {
+    if (!updatedSubCategoryDoc) {
       throw new NotFoundException(
-        `Category with ID "${id}" not found after update attempt.`,
+        `subcategory with ID "${id}" not found after update attempt.`,
       );
     }
-    return updatedCategoryDoc.toObject() as SubCategory;
+    return updatedSubCategoryDoc.toObject() as SubCategory;
   }
 
   async remove(id: string): Promise<SubCategory> {
-    const deletedCategory = await this.subcategoriesRepository.remove(id);
-    if (!deletedCategory) {
-      throw new NotFoundException('category not found');
+    const deletedSubCategory = await this.subcategoriesRepository.remove(id);
+    if (!deletedSubCategory) {
+      throw new NotFoundException('subcategory not found');
     }
-    return deletedCategory.toObject() as SubCategory;
+    return deletedSubCategory.toObject() as SubCategory;
   }
 }

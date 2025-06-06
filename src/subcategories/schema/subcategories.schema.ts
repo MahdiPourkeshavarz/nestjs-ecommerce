@@ -56,12 +56,8 @@ SubCategorySchema.index({ slug: 1 });
 SubCategorySchema.pre<SubCategoryDocument>(
   'save',
   function (this: SubCategoryDocument, next) {
-    if (this.name) {
-      this.slugname = slugify(this.name, {
-        lower: true,
-        strict: true,
-        remove: /[*+~.()'"!:@]/g,
-      });
+    if (this.name && (this.isModified('name') || this.isNew)) {
+      this.slugname = slugify(this.name, {});
     }
     next();
   },

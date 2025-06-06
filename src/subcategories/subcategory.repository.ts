@@ -14,45 +14,61 @@ import { UpdateSubCategoryDto } from './dto/update-subcategory.dto';
 export class SubCategoriesRepository {
   constructor(
     @InjectModel(SubCategory.name)
-    private categoryModel: Model<SubCategoryDocument>,
+    private subcategoryModel: Model<SubCategoryDocument>,
   ) {}
 
   async create(
     createCategoryDto: CreateSubCategoryDto,
   ): Promise<SubCategoryDocument> {
-    const newCategory = new this.categoryModel(createCategoryDto);
-    return await newCategory.save();
+    const newSubCategory = new this.subcategoryModel(createCategoryDto);
+    await newSubCategory.save();
+    return newSubCategory.populate('category');
   }
 
-  async findAll(): Promise<SubCategoryDocument[]> {
-    return await this.categoryModel.find({});
+  async findAll(): Promise<{ subs: SubCategoryDocument[]; total: number }> {
+    const subDocs = await this.subcategoryModel
+      .find({})
+      .populate('category')
+      .exec();
+    const total = await this.subcategoryModel.countDocuments();
+    return {
+      subs: subDocs,
+      total,
+    };
   }
 
   async findById(id: string): Promise<SubCategoryDocument | null> {
-    return await this.categoryModel.findById(id);
+    const subDoc = await this.subcategoryModel.findById(id);
+    if (!subDoc) {
+      return null;
+    }
+    return subDoc.populate('category');
   }
 
   async update(
     id: string,
     updateCategoryDto: UpdateSubCategoryDto,
   ): Promise<SubCategoryDocument | null> {
-    const category = await this.categoryModel.findById(id);
-    if (!category) {
+    const subcategory = await this.subcategoryModel.findById(id);
+    if (!subcategory) {
       return null;
     }
 
-    Object.assign(category, updateCategoryDto);
-    return await category.save();
+    Object.assign(subcategory, updateCategoryDto);
+    await subcategory.save();
+    return subcategory.populate('category');
   }
 
   async remove(id: string): Promise<SubCategoryDocument | null> {
-    return await this.categoryModel.findByIdAndDelete(id);
+    return await this.subcategoryModel
+      .findByIdAndDelete(id)
+      .populate('category');
   }
 
   async exists(
     filterQuery: FilterQuery<SubCategoryDocument>,
   ): Promise<boolean> {
-    const count = await this.categoryModel.countDocuments(filterQuery);
+    const count = await this.subcategoryModel.countDocuments(filterQuery);
     return count > 0;
   }
 }
