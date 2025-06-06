@@ -12,7 +12,7 @@ import { AuthCredentialsLoginDto, UserRole } from './dto/auth-credentials.dto';
 import { User } from 'src/users/schema/users.schema';
 import { UsersService } from 'src/users/users.service';
 import { ConfigService } from '@nestjs/config';
-import { JwtPayload } from './jwt-payoad.interface';
+import { JwtPayload } from './jwt-payload.interface';
 
 @Injectable()
 export class AuthService {

@@ -41,6 +41,7 @@ export class CategoriesController {
     return { status: 'success', data: { category } };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(): Promise<{
     status: string;
@@ -50,6 +51,7 @@ export class CategoriesController {
     return { status: 'success', data: { categories } };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(
     @Param('id') id: string,
