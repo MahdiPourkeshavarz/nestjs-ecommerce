@@ -8,7 +8,7 @@ import { Document, Schema as MongooseSchema } from 'mongoose';
 import slugify from 'slugify';
 import { Category } from 'src/categories/schema/categories.schema';
 
-export type CategoryDocument = SubCategory & Document;
+export type SubCategoryDocument = SubCategory & Document;
 
 @Schema({
   timestamps: true,
@@ -53,9 +53,9 @@ export const SubCategorySchema = SchemaFactory.createForClass(SubCategory);
 
 SubCategorySchema.index({ slug: 1 });
 
-SubCategorySchema.pre<CategoryDocument>(
+SubCategorySchema.pre<SubCategoryDocument>(
   'save',
-  function (this: CategoryDocument, next) {
+  function (this: SubCategoryDocument, next) {
     if (this.name) {
       this.slugname = slugify(this.name, {
         lower: true,

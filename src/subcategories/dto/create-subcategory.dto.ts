@@ -8,7 +8,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class CreateCategoryDto {
+export class CreateSubCategoryDto {
   @IsString()
   @IsNotEmpty({ message: 'category id is important' })
   category: string;

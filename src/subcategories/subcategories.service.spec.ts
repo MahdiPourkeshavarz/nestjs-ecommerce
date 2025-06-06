@@ -1,17 +1,17 @@
 /* eslint-disable prettier/prettier */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { SubcategoriesService } from './subcategories.service';
+import { SubCategoriesService } from './subcategories.service';
 
 describe('SubcategoriesService', () => {
-  let service: SubcategoriesService;
+  let service: SubCategoriesService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SubcategoriesService],
+      providers: [SubCategoriesService],
     }).compile();
 
-    service = module.get<SubcategoriesService>(SubcategoriesService);
+    service = module.get<SubCategoriesService>(SubCategoriesService);
   });
 
   it('should be defined', () => {
