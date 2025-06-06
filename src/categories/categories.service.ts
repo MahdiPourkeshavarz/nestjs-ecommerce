@@ -44,7 +44,7 @@ export class CategoriesService {
     try {
       const categoryDoc =
         await this.categoriesRepository.create(createCategoryDto);
-      return categoryDoc as Category;
+      return categoryDoc.toObject() as Category;
     } catch (error) {
       throw new InternalServerErrorException(
         'could not create category',
