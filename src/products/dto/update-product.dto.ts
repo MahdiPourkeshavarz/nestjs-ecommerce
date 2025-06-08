@@ -27,6 +27,10 @@ export class UpdateProductDto {
   @MaxLength(70, { message: 'name too long!' })
   name: string;
 
+  @IsString()
+  @IsOptional()
+  slugname: string;
+
   @IsNumber()
   @IsOptional()
   price: number;
