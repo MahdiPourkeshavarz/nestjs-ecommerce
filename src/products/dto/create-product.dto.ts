@@ -48,6 +48,7 @@ export class CreateProductDto {
   description: string;
 
   @IsObject()
+  @IsOptional()
   rating: Rating;
 
   @IsArray()

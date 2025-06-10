@@ -18,9 +18,9 @@ export class SubCategoriesRepository {
   ) {}
 
   async create(
-    createCategoryDto: CreateSubCategoryDto,
+    createSubCategoryDto: CreateSubCategoryDto,
   ): Promise<SubCategoryDocument> {
-    const newSubCategory = new this.subcategoryModel(createCategoryDto);
+    const newSubCategory = new this.subcategoryModel(createSubCategoryDto);
     await newSubCategory.save();
     return newSubCategory.populate('category');
   }
@@ -47,16 +47,13 @@ export class SubCategoriesRepository {
 
   async update(
     id: string,
-    updateCategoryDto: UpdateSubCategoryDto,
+    updateSubCategoryDto: UpdateSubCategoryDto,
   ): Promise<SubCategoryDocument | null> {
-    const subcategory = await this.subcategoryModel.findById(id);
-    if (!subcategory) {
-      return null;
-    }
+    const updatedSubcategory = await this.subcategoryModel
+      .findByIdAndUpdate(id, { $set: updateSubCategoryDto }, { new: true })
+      .populate(['user', 'products.product']);
 
-    Object.assign(subcategory, updateCategoryDto);
-    await subcategory.save();
-    return subcategory.populate('category');
+    return updatedSubcategory;
   }
 
   async remove(id: string): Promise<SubCategoryDocument | null> {

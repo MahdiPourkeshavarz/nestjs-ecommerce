@@ -65,7 +65,7 @@ export class SubCategoriesService {
       return subcategoryDoc.toObject() as SubCategory;
     } catch (error) {
       throw new InternalServerErrorException(
-        'could not create subcategory',
+        'could not register subcategory',
         error,
       );
     }

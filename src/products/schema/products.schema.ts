@@ -67,32 +67,27 @@ export class Product {
 
   @Prop({
     type: Number,
-    required: true,
   })
   price: number;
 
   @Prop({
     type: Number,
-    required: true,
   })
   quantity: number;
 
   @Prop({
     type: String,
-    required: true,
     trim: true,
   })
   brand: string;
 
   @Prop({
     type: Number,
-    default: 0,
   })
   discount: number;
 
   @Prop({
     type: String,
-    required: true,
     trim: true,
   })
   description: string;
@@ -113,7 +108,6 @@ export class Product {
 
   @Prop({
     type: RatingSchema,
-    default: () => ({ rate: 0, count: 0 }),
   })
   rating: Rating;
 }

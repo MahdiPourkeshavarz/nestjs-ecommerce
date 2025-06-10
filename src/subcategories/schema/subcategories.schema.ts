@@ -15,6 +15,7 @@ export type SubCategoryDocument = SubCategory & Document;
   toJSON: {
     virtuals: true,
     transform: (doc, ret) => {
+      delete ret.category;
       ret.id = ret._id.toString();
       delete ret._id;
       delete ret.__v;
@@ -24,6 +25,7 @@ export type SubCategoryDocument = SubCategory & Document;
   toObject: {
     virtuals: true,
     transform: (doc, ret) => {
+      delete ret.category;
       ret.id = ret._id.toString();
       delete ret._id;
       delete ret.__v;
