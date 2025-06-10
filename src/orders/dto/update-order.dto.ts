@@ -12,7 +12,7 @@ import {
 } from 'class-validator';
 import { ProductInOrderDto } from './products-in-order.dto';
 
-export class CreateOrderDto {
+export class UpdateOrderDto {
   @IsString()
   @IsNotEmpty()
   @IsOptional()

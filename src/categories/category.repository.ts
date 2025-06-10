@@ -32,13 +32,13 @@ export class CategoriesRepository {
     id: string,
     updateCategoryDto: UpdateCategoryDto,
   ): Promise<CategoryDocument | null> {
-    const category = await this.categoryModel.findById(id);
-    if (!category) {
-      return null;
-    }
+    const updatedCategory = await this.categoryModel.findByIdAndUpdate(
+      id,
+      { $set: updateCategoryDto },
+      { new: true },
+    );
 
-    Object.assign(category, updateCategoryDto);
-    return await category.save();
+    return updatedCategory;
   }
 
   async remove(id: string): Promise<CategoryDocument | null> {

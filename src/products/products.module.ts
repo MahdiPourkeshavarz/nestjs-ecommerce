@@ -16,7 +16,7 @@ import { SubcategoriesModule } from 'src/subcategories/subcategories.module';
     SubcategoriesModule,
   ],
   controllers: [ProductsController],
-  providers: [ProductsService],
+  providers: [ProductsService, ProductsRepository],
   exports: [ProductsService, ProductsRepository],
 })
 export class ProductsModule {}

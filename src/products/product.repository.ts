@@ -16,14 +16,13 @@ export class ProductsRepository {
   async create(createProductDto: CreateProductDto): Promise<ProductDocument> {
     const newProduct = new this.productModel(createProductDto);
     await newProduct.save();
-    return (await newProduct.populate('category')).populate('subcategory');
+    return await newProduct.populate(['category', 'subcategory']);
   }
 
   async findAll(): Promise<{ products: ProductDocument[]; total: number }> {
     const products = await this.productModel
       .find({})
-      .populate('category')
-      .populate('subcategory')
+      .populate(['category', 'subcategory'])
       .exec();
     const total = await this.productModel.countDocuments();
     return {
@@ -37,28 +36,24 @@ export class ProductsRepository {
     if (!product) {
       return null;
     }
-    return (await product.populate('category')).populate('subcategory');
+    return await product.populate(['category', 'subcategory']);
   }
 
   async update(
     id: string,
     updateProductDto: UpdateProductDto,
   ): Promise<ProductDocument | null> {
-    const product = await this.productModel.findById(id);
-    if (!product) {
-      return null;
-    }
+    const updatedProduct = await this.productModel
+      .findByIdAndUpdate(id, { $set: updateProductDto }, { new: true })
+      .populate(['category', 'subcategory']);
 
-    Object.assign(product, updateProductDto);
-    await product.save();
-    return (await product.populate('category')).populate('subcategory');
+    return updatedProduct;
   }
 
   async remove(id: string): Promise<ProductDocument | null> {
     return await this.productModel
       .findByIdAndDelete(id)
-      .populate('category')
-      .populate('subcategory');
+      .populate(['category', 'subcategory']);
   }
 
   async exists(filterQuery: FilterQuery<ProductDocument>): Promise<boolean> {
