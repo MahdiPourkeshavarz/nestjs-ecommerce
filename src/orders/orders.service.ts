@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
 import {
@@ -13,6 +14,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { Order } from './schema/orders.schema';
 import { FindAllResponse } from './models/findAll-response.model';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { Product } from 'src/products/schema/products.schema';
 
 @Injectable()
 export class OrdersService {
@@ -23,20 +25,29 @@ export class OrdersService {
   ) {}
 
   async create(createOrderDto: CreateOrderDto): Promise<Order> {
+    let totalPrice = 0;
     if (!(await this.userRepository.findById(createOrderDto.user))) {
       throw new NotFoundException(
         `user with ID "${createOrderDto.user}" not found`,
       );
     }
     for (const product of createOrderDto.products) {
-      if (!(await this.productRepository.findById(product.product))) {
+      const foundedProduct: Product | null =
+        await this.productRepository.findById(product.product);
+      if (!foundedProduct) {
         throw new NotFoundException(
           `product with ID "${product.product}" not found`,
         );
+      } else {
+        totalPrice += foundedProduct.price * product.count;
       }
     }
+    const orderPayload = {
+      ...createOrderDto,
+      totalPrice: totalPrice,
+    };
     try {
-      const orderDoc = await this.orderRepository.create(createOrderDto);
+      const orderDoc = await this.orderRepository.create(orderPayload);
       return orderDoc.toObject() as Order;
     } catch (error) {
       throw new InternalServerErrorException('could not create order', error);

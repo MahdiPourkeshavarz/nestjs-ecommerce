@@ -17,6 +17,8 @@ export type ProductDocument = Product & Document;
   toJSON: {
     virtuals: true,
     transform: (doc, ret) => {
+      delete ret.category;
+      delete ret.subcategory;
       ret.id = ret._id.toString();
       delete ret._id;
       delete ret.__v;
@@ -26,6 +28,8 @@ export type ProductDocument = Product & Document;
   toObject: {
     virtuals: true,
     transform: (doc, ret) => {
+      delete ret.category;
+      delete ret.subcategory;
       ret.id = ret._id.toString();
       delete ret._id;
       delete ret.__v;

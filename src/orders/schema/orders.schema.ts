@@ -45,11 +45,10 @@ export class Order {
     type: [ProductsInOrderSchema],
     required: true,
   })
-  products: ProductsInOrder;
+  products: ProductsInOrder[];
 
   @Prop({
     type: Number,
-    default: 0,
   })
   totalPrice: number;
 
