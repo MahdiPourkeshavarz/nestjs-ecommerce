@@ -25,32 +25,38 @@ export class OrdersService {
   ) {}
 
   async create(createOrderDto: CreateOrderDto): Promise<Order> {
-    let totalPrice = 0;
-    if (!(await this.userRepository.findById(createOrderDto.user))) {
+    const user = await this.userRepository.findById(createOrderDto.user);
+    if (!user) {
       throw new NotFoundException(
-        `user with ID "${createOrderDto.user}" not found`,
+        `User with ID "${createOrderDto.user}" not found`,
       );
     }
-    for (const product of createOrderDto.products) {
-      const foundedProduct: Product | null =
-        await this.productRepository.findById(product.product);
-      if (!foundedProduct) {
+
+    let totalPrice = 0;
+
+    for (const item of createOrderDto.products) {
+      const productFromDb = await this.productRepository.findById(item.product);
+
+      if (!productFromDb) {
         throw new NotFoundException(
-          `product with ID "${product.product}" not found`,
+          `Product with ID "${item.product}" not found`,
         );
-      } else {
-        totalPrice += foundedProduct.price * product.count;
       }
+
+      totalPrice += productFromDb.price * item.count;
     }
+
     const orderPayload = {
       ...createOrderDto,
       totalPrice: totalPrice,
     };
+
     try {
       const orderDoc = await this.orderRepository.create(orderPayload);
       return orderDoc.toObject() as Order;
     } catch (error) {
-      throw new InternalServerErrorException('could not create order', error);
+      console.error('Error creating order in repository:', error);
+      throw new InternalServerErrorException('Could not create order');
     }
   }
 

@@ -70,24 +70,3 @@ export class Order {
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
-
-OrderSchema.pre('save', async function (next) {
-  let total = 0;
-
-  const doc = await this.populate('products.product', { price: 1 });
-
-  const products = doc.products as unknown as {
-    product: { price: number };
-    count: number;
-  }[];
-
-  for (const { product, count } of products) {
-    if (product && product.price) {
-      total += product.price * count;
-    }
-  }
-
-  this.totalPrice = total;
-
-  next();
-});

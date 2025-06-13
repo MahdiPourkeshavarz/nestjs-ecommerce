@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
@@ -16,6 +17,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { Product } from './schema/products.schema';
 import { FindAllResponse } from './models/findAll-response.model';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { ImageProcessingService } from './image-processing.service';
 
 @Injectable()
 export class ProductsService {
@@ -23,6 +25,7 @@ export class ProductsService {
     private readonly subcategoriesRepository: SubCategoriesRepository,
     private readonly categoriesRepository: CategoriesRepository,
     private readonly productRepository: ProductsRepository,
+    private readonly imageProcessingService: ImageProcessingService,
   ) {}
 
   private generateSlug(name: string): string {
@@ -33,7 +36,10 @@ export class ProductsService {
     });
   }
 
-  async create(createProductDto: CreateProductDto): Promise<Product> {
+  async create(
+    createProductDto: CreateProductDto,
+    files: { thumbnail?: Express.Multer.File; images?: Express.Multer.File[] },
+  ): Promise<Product> {
     if (
       !(await this.categoriesRepository.findById(createProductDto.category))
     ) {
@@ -64,11 +70,43 @@ export class ProductsService {
       throw new ConflictException('this product has already been created');
     }
 
+    const productDoc = await this.productRepository.create(createProductDto);
+
+    const thumbnailFilename =
+      await this.imageProcessingService.resizeProductThumbnails(
+        productDoc.id,
+        files.thumbnail?.[0],
+      );
+
+    const imagesFilenames =
+      await this.imageProcessingService.resizeProductsImages(
+        productDoc.id,
+        files.images as Express.Multer.File[],
+      );
+
+    if (thumbnailFilename) {
+      productDoc.thumbnail = thumbnailFilename;
+    }
+
+    if (imagesFilenames.length > 0) {
+      productDoc.images = imagesFilenames as [string];
+    }
+
     try {
-      const productDoc = await this.productRepository.create(createProductDto);
-      return productDoc.toObject() as Product;
+      await productDoc.save();
+      const finalProduct = await this.productRepository.findById(productDoc.id);
+
+      if (!finalProduct) {
+        throw new InternalServerErrorException(
+          'Failed to retrieve the created product.',
+        );
+      }
+      return finalProduct;
     } catch (error) {
-      throw new InternalServerErrorException('could not create product', error);
+      throw new InternalServerErrorException(
+        'Could not update product with images',
+        error,
+      );
     }
   }
 

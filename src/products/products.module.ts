@@ -8,6 +8,7 @@ import { Product, ProductSchema } from './schema/products.schema';
 import { ProductsRepository } from './product.repository';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { SubcategoriesModule } from 'src/subcategories/subcategories.module';
+import { ImageProcessingService } from './image-processing.service';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { SubcategoriesModule } from 'src/subcategories/subcategories.module';
     SubcategoriesModule,
   ],
   controllers: [ProductsController],
-  providers: [ProductsService, ProductsRepository],
+  providers: [ProductsService, ProductsRepository, ImageProcessingService],
   exports: [ProductsService, ProductsRepository],
 })
 export class ProductsModule {}
