@@ -11,6 +11,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { ProductInOrderDto } from './products-in-order.dto';
+import { Type } from 'class-transformer';
 
 export class CreateOrderDto {
   @IsString()
@@ -20,6 +21,7 @@ export class CreateOrderDto {
   @IsArray()
   @ArrayNotEmpty()
   @ValidateNested({ each: true })
+  @Type(() => ProductInOrderDto)
   readonly products: ProductInOrderDto[];
 
   @IsDate()

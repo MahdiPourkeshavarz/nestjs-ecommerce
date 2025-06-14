@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Order, OrderDocument } from './schema/orders.schema';
 import { FilterQuery, Model } from 'mongoose';
-import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 
 @Injectable()
@@ -13,10 +12,13 @@ export class OrdersRepository {
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
   ) {}
 
-  async create(createOrderDto: CreateOrderDto): Promise<OrderDocument> {
-    const newOrder = new this.orderModel(createOrderDto);
+  async create(orderPayload: Record<string, any>): Promise<OrderDocument> {
+    const newOrder = new this.orderModel(orderPayload);
     await newOrder.save();
-    return await newOrder.populate(['user', 'products.product']);
+    return await newOrder.populate([
+      { path: 'user' },
+      { path: 'products.product' },
+    ]);
   }
 
   async findAll(): Promise<{ orders: OrderDocument[]; total: number }> {

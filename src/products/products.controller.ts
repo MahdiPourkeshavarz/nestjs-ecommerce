@@ -8,7 +8,9 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -21,12 +23,23 @@ import { Product } from './schema/products.schema';
 import { CreateProductDto } from './dto/create-product.dto';
 import { FindAllResponse } from './models/findAll-response.model';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { multerOption } from 'src/config/multer.config';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        { name: 'thumbnail', maxCount: 1 },
+        { name: 'images', maxCount: 5 },
+      ],
+      multerOption,
+    ),
+  )
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @UsePipes(
@@ -37,8 +50,10 @@ export class ProductsController {
   )
   async create(
     @Body() createProductDto: CreateProductDto,
+    @UploadedFiles()
+    files: { thumbnail?: Express.Multer.File; images?: Express.Multer.File[] },
   ): Promise<{ status: 'success'; data: { product: Product } }> {
-    const product = await this.productsService.create(createProductDto);
+    const product = await this.productsService.create(createProductDto, files);
     return { status: 'success', data: { product } };
   }
 

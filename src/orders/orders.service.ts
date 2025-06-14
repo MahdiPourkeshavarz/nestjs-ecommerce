@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
 import {
@@ -13,6 +14,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { Order } from './schema/orders.schema';
 import { FindAllResponse } from './models/findAll-response.model';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { Product } from 'src/products/schema/products.schema';
 
 @Injectable()
 export class OrdersService {
@@ -23,23 +25,38 @@ export class OrdersService {
   ) {}
 
   async create(createOrderDto: CreateOrderDto): Promise<Order> {
-    if (!(await this.userRepository.findById(createOrderDto.user))) {
+    const user = await this.userRepository.findById(createOrderDto.user);
+    if (!user) {
       throw new NotFoundException(
-        `user with ID "${createOrderDto.user}" not found`,
+        `User with ID "${createOrderDto.user}" not found`,
       );
     }
-    for (const product of createOrderDto.products) {
-      if (!(await this.productRepository.findById(product.product))) {
+
+    let totalPrice = 0;
+
+    for (const item of createOrderDto.products) {
+      const productFromDb = await this.productRepository.findById(item.product);
+
+      if (!productFromDb) {
         throw new NotFoundException(
-          `product with ID "${product.product}" not found`,
+          `Product with ID "${item.product}" not found`,
         );
       }
+
+      totalPrice += productFromDb.price * item.count;
     }
+
+    const orderPayload = {
+      ...createOrderDto,
+      totalPrice: totalPrice,
+    };
+
     try {
-      const orderDoc = await this.orderRepository.create(createOrderDto);
+      const orderDoc = await this.orderRepository.create(orderPayload);
       return orderDoc.toObject() as Order;
     } catch (error) {
-      throw new InternalServerErrorException('could not create order', error);
+      console.error('Error creating order in repository:', error);
+      throw new InternalServerErrorException('Could not create order');
     }
   }
 
