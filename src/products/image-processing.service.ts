@@ -66,7 +66,7 @@ export class ImageProcessingService {
           .toFormat('webp')
           .webp({ lossless: true })
           .toFile(outputPath);
-        return imageFilename;
+        return imageFilename; 
       }),
     );
     return resizedImages;
