@@ -139,4 +139,14 @@ export class UsersRepository {
     const count = await this.userModel.countDocuments(filterQuery);
     return count > 0;
   }
+
+  async updateHashedRefreshToken(
+    userId: string,
+    hashedRefreshToken: string | null,
+  ): Promise<void> {
+    await this.userModel.updateOne(
+      { _id: userId },
+      { $set: { hashedRefreshToken } },
+    );
+  }
 }

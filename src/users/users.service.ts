@@ -246,4 +246,8 @@ export class UsersService {
       console.error(`Failed to create admin user (${adminUsername}):`, error);
     }
   }
+
+  async removeRefreshToken(userId: string): Promise<void> {
+    await this.usersRepository.updateHashedRefreshToken(userId, null);
+  }
 }
