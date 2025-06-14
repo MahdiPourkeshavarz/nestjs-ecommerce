@@ -43,7 +43,7 @@ This is the fastest and most reliable way to get started. It will set up both th
 1.  **Clone the repository:**
 
     ```bash
-    git clone <your-repository-url>
+    git https://github.com/MahdiPourkeshavarz/nestjs-ecommerce.git
     cd <your-project-directory>
     ```
 
