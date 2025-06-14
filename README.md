@@ -1,98 +1,161 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS E-commerce Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A robust and scalable backend for an e-commerce platform built with NestJS. This project provides a complete set of features for managing products, users, orders, and authentication, all within a modern, modular architecture. The application is fully containerized with Docker for easy setup and deployment.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## ✨ Features
 
-## Description
+- **RESTful API**: A well-structured and documented API for all e-commerce functionalities.
+- **Authentication**: Secure JWT-based authentication with Access and Refresh Token strategies using Passport.js.
+- **Role-Based Access Control (RBAC)**: Guards to restrict access to certain endpoints based on user roles (e.g., admin).
+- **Product Management**: Full CRUD operations for products, categories, and subcategories.
+- **Image Uploads**: Handles product image and thumbnail uploads, with on-the-fly image processing and optimization using `multer` and `sharp`.
+- **Order Management**: Logic for creating and managing user orders.
+- **User Management**: Endpoints for managing user data.
+- **Configuration Management**: Centralized configuration using `@nestjs/config`.
+- **Database Integration**: Uses Mongoose for elegant MongoDB object modeling.
+- **Dockerized Environment**: Comes with a multi-stage `Dockerfile` and a `docker-compose.yml` for a one-command setup of both the application and a local MongoDB database.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🛠️ Tech Stack
 
-## Project setup
+- **Framework**: [NestJS](https://nestjs.com/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Database**: [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/)
+- **Authentication**: [Passport.js](http://www.passportjs.org/) (jwt, local strategies)
+- **Image Handling**: [Multer](https://github.com/expressjs/multer) & [Sharp](https://sharp.pixelplumbing.com/)
+- **Containerization**: [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
+- **Linting/Formatting**: ESLint & Prettier
 
-```bash
-$ npm install
+## 🚀 Getting Started
+
+There are two ways to get the application running: using Docker (recommended for a quick and consistent setup) or running it locally on your machine.
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/en/) (v18 or higher)
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (for the Docker setup)
+- A `.env` file (see the [Environment Variables](https://www.google.com/search?q=%23-environment-variables) section below)
+
+### 🐳 Running with Docker (Recommended)
+
+This is the fastest and most reliable way to get started. It will set up both the application and a MongoDB database container that are configured to work together.
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone <your-repository-url>
+    cd <your-project-directory>
+    ```
+
+2.  **Create an environment file:**
+    Create a file named `.env` in the root of the project and fill it with your configuration variables. You can use the `.env.example` section below as a template.
+
+3.  **Build and run the containers:**
+    Run the following single command in your terminal.
+
+    ```bash
+    docker-compose up --build
+    ```
+
+    - The `--build` flag is only needed the first time or when you make changes to the `Dockerfile`.
+    - To run in the background, use `docker-compose up -d`.
+
+The API will be available at `http://localhost:8000` (or whichever port you configured).
+
+### 💻 Running Locally (Without Docker)
+
+1.  **Clone the repository:**
+
+    ```bash
+    git https://github.com/MahdiPourkeshavarz/nestjs-ecommerce.git
+    cd <your-project-directory>
+    ```
+
+2.  **Install dependencies:**
+
+    ```bash
+    npm install
+    ```
+
+3.  **Set up the environment:**
+    Create a `.env` file in the root directory and add the necessary configuration. Make sure your `DATABASE_URL` points to a running MongoDB instance.
+
+4.  **Run the application:**
+
+    ```bash
+    npm run start:dev
+    ```
+
+    The application will start in watch mode, automatically restarting on file changes. The API will be available at `http://localhost:8000`.
+
+## 📝 Environment Variables
+
+Create a `.env` file in the project root and add the following variables. Do not commit this file to version control.
+
+```env
+# --- Application Configuration ---
+PORT=8000
+HOST=127.0.0.1
+
+# --- Database ---
+# Use your MongoDB Atlas connection string for production/cloud dev
+# For local Docker setup, this will be overridden by docker-compose.yml
+DATABASE_URL=mongodb+srv://<user>:<password>@<cluster-url>/<db-name>?retryWrites=true&w=majority
+
+# --- JWT Authentication ---
+JWT_ACCESS_TOKEN_SECRET=your_super_secret_key_for_access_tokens
+JWT_ACCESS_TOKEN_EXPIRES_IN=15m
+JWT_REFRESH_TOKEN_SECRET=your_even_more_secret_key_for_refresh_tokens
+JWT_REFRESH_TOKEN_EXPIRES_IN=7d
+
+# --- Default Admin User (for initial seeding, if applicable) ---
+ADMIN_FIRSTNAME=admin
+ADMIN_LASTNAME=admin
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=admin1234
+ADMIN_PHONE_NUMBER=09123456789
+ADMIN_ADDRESS=Some Address
 ```
 
-## Compile and run the project
+## 📂 Project Structure
 
-```bash
-# development
-$ npm run start
+The project structure is organized by feature modules, promoting modularity and separation of concerns.
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```
+/
+├── public/              # Static files (e.g., uploaded images)
+├── src/
+│   ├── auth/            # Authentication logic (controllers, services, strategies, guards)
+│   ├── categories/      # Categories feature module
+│   ├── common/          # Common utilities or decorators
+│   ├── config/          # Application configuration (multer.config.ts)
+│   ├── database/        # Database related files
+│   ├── orders/          # Orders feature module
+│   ├── products/        # Products feature module (includes image-processing.service.ts)
+│   ├── subcategories/   # Subcategories feature module
+│   ├── users/           # Users feature module
+│   ├── app.module.ts    # Root application module
+│   └── main.ts          # Application entry point
+├── .dockerignore
+├── .env                 # (You create this) Environment variables
+├── .gitignore
+├── docker-compose.yml   # Docker Compose configuration
+├── Dockerfile           # Multi-stage Docker build instructions
+└── package.json
 ```
 
-## Run tests
+## 📚 API Documentation
 
-```bash
-# unit tests
-$ npm run test
+This project is set up to easily integrate with Swagger for auto-generated, interactive API documentation. To enable it:
 
-# e2e tests
-$ npm run test:e2e
+1.  Install Swagger dependencies:
+    ```bash
+    npm install @nestjs/swagger
+    ```
+2.  In `src/main.ts`, add the Swagger setup code.
 
-# test coverage
-$ npm run test:cov
-```
+Once configured, the interactive API documentation will be available at `http://localhost:8000/api`.
 
-## Deployment
+## 📄 License
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is licensed under the MIT License. See the `LICENSE` file for details.
