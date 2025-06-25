@@ -70,4 +70,9 @@ export class AuthService {
       throw new UnauthorizedException('Please check your login credentials');
     }
   }
+
+  async logout(userId: string): Promise<{ message: string }> {
+    await this.usersService.removeRefreshToken(userId);
+    return { message: 'user logged out successfully' };
+  }
 }

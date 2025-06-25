@@ -20,18 +20,6 @@ export class UsersRepository {
     return newUser.save();
   }
 
-  async findOne(
-    filterQuery: FilterQuery<UserDocument>,
-    select?: string | Record<string, number>,
-  ): Promise<UserDocument | null> {
-    let query: Query<UserDocument | null, UserDocument> =
-      this.userModel.findOne(filterQuery);
-    if (select) {
-      query = query.select(select);
-    }
-    return query.exec();
-  }
-
   async findById(
     id: string,
     select?: string | Record<string, number>,
@@ -138,5 +126,15 @@ export class UsersRepository {
   async exists(filterQuery: FilterQuery<UserDocument>): Promise<boolean> {
     const count = await this.userModel.countDocuments(filterQuery);
     return count > 0;
+  }
+
+  async updateHashedRefreshToken(
+    userId: string,
+    hashedRefreshToken: string | null,
+  ): Promise<void> {
+    await this.userModel.updateOne(
+      { _id: userId },
+      { $set: { hashedRefreshToken } },
+    );
   }
 }

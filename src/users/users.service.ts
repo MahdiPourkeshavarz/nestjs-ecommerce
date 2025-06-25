@@ -98,14 +98,6 @@ export class UsersService {
     return result as User;
   }
 
-  async findByUsername(username: string): Promise<UserDocument | null> {
-    const normalizedUsername = username.toLowerCase();
-    return this.usersRepository.findOne(
-      { username: normalizedUsername },
-      '+password +refreshToken',
-    );
-  }
-
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const userToUpdate = await this.usersRepository.findById(id, '+password');
     if (!userToUpdate) {
@@ -245,5 +237,9 @@ export class UsersService {
     } catch (error) {
       console.error(`Failed to create admin user (${adminUsername}):`, error);
     }
+  }
+
+  async removeRefreshToken(userId: string): Promise<void> {
+    await this.usersRepository.updateHashedRefreshToken(userId, null);
   }
 }

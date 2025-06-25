@@ -14,7 +14,7 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
-import { WishlistItemDto } from 'src/users/dto/whishlist.dto';
+import { WishlistItemDto } from '../../users/dto/wishlist.dto';
 
 const passwordRegex =
   /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()])[A-Za-z\d!@#$%^&*()]{8,}$/;
@@ -64,12 +64,12 @@ export class AuthCredentialsSignupDto {
   @ValidateNested({ each: true })
   @Type(() => WishlistItemDto)
   @IsOptional()
-  wishlist: WishlistItemDto[];
+  wishlist?: WishlistItemDto[];
 
   @IsEnum(UserRole, { message: 'Invalid role. Must be ADMIN or USER' })
   @IsOptional()
   @Type(() => String)
-  role: UserRole;
+  role?: UserRole;
 }
 
 export class AuthCredentialsLoginDto {
