@@ -64,12 +64,12 @@ export class AuthCredentialsSignupDto {
   @ValidateNested({ each: true })
   @Type(() => WishlistItemDto)
   @IsOptional()
-  wishlist: WishlistItemDto[];
+  wishlist?: WishlistItemDto[];
 
   @IsEnum(UserRole, { message: 'Invalid role. Must be ADMIN or USER' })
   @IsOptional()
   @Type(() => String)
-  role: UserRole;
+  role?: UserRole;
 }
 
 export class AuthCredentialsLoginDto {

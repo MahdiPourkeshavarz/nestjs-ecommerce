@@ -89,14 +89,14 @@ export class User {
     type: [WishlistItemSchema],
     default: [],
   })
-  wishlist: [];
+  wishlist?: [];
 
   @Prop({
     type: String,
     default: 'USER',
     enum: { values: ['ADMIN', 'USER'], message: 'invalid role: ({VALUE})' },
   })
-  role: string;
+  role?: string;
 }
 export const UserSchema = SchemaFactory.createForClass(User);
 
