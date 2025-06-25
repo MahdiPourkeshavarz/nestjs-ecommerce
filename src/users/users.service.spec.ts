@@ -113,7 +113,6 @@ describe('UsersService', () => {
       usersRepository.findById.mockResolvedValue(userFromdb);
       const res = await userService.findOne(userId);
       expect(usersRepository.findById).toHaveBeenCalledWith(userId);
-      // expect(userService.findOne).toHaveBeenCalledTimes(1);
       expect(res.username).toEqual(mockUser2.username);
     });
     it('should call this method and handle error', () => {
@@ -135,7 +134,6 @@ describe('UsersService', () => {
       usersRepository.findAll.mockResolvedValue(repoResult);
       const query = { page: 1, limit: 10 };
       const res = await userService.findAll(query);
-      // expect(userService.findAll).toHaveBeenCalledTimes(1);
       expect(res.total).toBe(2);
       expect(usersRepository.findAll).toHaveBeenCalledWith(query);
       expect(res.data.users[1]).not.toHaveProperty('password');

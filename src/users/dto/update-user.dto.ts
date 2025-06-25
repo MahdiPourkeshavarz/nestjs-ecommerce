@@ -14,7 +14,7 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
-import { WishlistItemDto } from './whishlist.dto';
+import { WishlistItemDto } from './wishlist.dto';
 
 const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)/;
 
@@ -26,7 +26,7 @@ export enum UserRole {
 export class UpdateUserDto {
   @IsString()
   @Type(() => String)
-  id: string;
+  id?: string;
 
   @IsOptional()
   @IsString()

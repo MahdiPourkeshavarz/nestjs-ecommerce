@@ -14,7 +14,7 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
-import { WishlistItemDto } from 'src/users/dto/whishlist.dto';
+import { WishlistItemDto } from '../../users/dto/wishlist.dto';
 
 const passwordRegex =
   /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()])[A-Za-z\d!@#$%^&*()]{8,}$/;

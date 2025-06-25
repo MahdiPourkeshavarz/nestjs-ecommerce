@@ -17,10 +17,10 @@ import { PaginatedUsersResult, UsersService } from './users.service';
 import { User } from './schema/users.schema';
 import { QueryUserDto } from './dto/query-user.dto';
 import { UpdateUserDto, UserRole } from './dto/update-user.dto';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guard/roles.guard';
-import { AuthCredentialsSignupDto } from 'src/auth/dto/auth-credentials.dto';
-import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { RolesGuard } from '../auth/guard/roles.guard';
+import { AuthCredentialsSignupDto } from '../auth/dto/auth-credentials.dto';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('users')
 export class UsersController {
