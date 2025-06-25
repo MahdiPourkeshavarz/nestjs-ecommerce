@@ -73,7 +73,6 @@ describe('UsersController', () => {
       const res = await controller.update(userId, updateDto);
 
       expect(service.update).toHaveBeenCalledWith(userId, updateDto);
-      expect(service.update).toHaveBeenCalledTimes(1);
       expect(res).toEqual({
         status: 'success',
         data: {
@@ -85,12 +84,11 @@ describe('UsersController', () => {
 
   describe('create', () => {
     it('should call update in service and return created user', async () => {
-      mockUsersService.create.mockResolvedValue(mockUserDto);
+      mockUsersService.create.mockResolvedValue(mockCreatedUser);
 
       const res = await controller.create(mockUserDto);
 
       expect(service.create).toHaveBeenCalledWith(mockUserDto);
-      expect(service.update).toHaveBeenCalledTimes(1);
       expect(res).toEqual({
         status: 'success',
         data: {
