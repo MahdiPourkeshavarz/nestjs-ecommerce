@@ -15,7 +15,7 @@ import slugify from 'slugify';
 import { CreateSubCategoryDto } from './dto/create-subcategory.dto';
 import { SubCategory } from './schema/subcategories.schema';
 import { UpdateSubCategoryDto } from './dto/update-subcategory.dto';
-import { CategoriesRepository } from 'src/categories/category.repository';
+import { CategoriesRepository } from '../categories/category.repository';
 import { FindAllResponse } from './models/findAll-response.model';
 
 @Injectable()
