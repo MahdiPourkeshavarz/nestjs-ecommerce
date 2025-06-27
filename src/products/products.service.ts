@@ -10,8 +10,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ProductsRepository } from './product.repository';
-import { CategoriesRepository } from 'src/categories/category.repository';
-import { SubCategoriesRepository } from 'src/subcategories/subcategory.repository';
+import { CategoriesRepository } from '../categories/category.repository';
+import { SubCategoriesRepository } from '../subcategories/subcategory.repository';
 import slugify from 'slugify';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Product } from './schema/products.schema';

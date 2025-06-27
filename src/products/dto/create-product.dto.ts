@@ -53,9 +53,9 @@ export class CreateProductDto {
 
   @IsArray()
   @IsOptional()
-  images: string[];
+  images?: string[];
 
   @IsString()
   @IsOptional()
-  thumbnail: string;
+  thumbnail?: string;
 }

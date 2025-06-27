@@ -5,8 +5,8 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
-import { Category } from 'src/categories/schema/categories.schema';
-import { SubCategory } from 'src/subcategories/schema/subcategories.schema';
+import { Category } from '../../categories/schema/categories.schema';
+import { SubCategory } from '../../subcategories/schema/subcategories.schema';
 import { Rating, RatingSchema } from './rating.schema';
 import slugify from 'slugify';
 

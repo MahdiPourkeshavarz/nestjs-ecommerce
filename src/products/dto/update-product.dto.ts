@@ -25,43 +25,43 @@ export class UpdateProductDto {
   @IsOptional()
   @MinLength(2, { message: 'product name should be at least 2 character' })
   @MaxLength(70, { message: 'name too long!' })
-  name: string;
+  name?: string;
 
   @IsString()
   @IsOptional()
-  slugname: string;
+  slugname?: string;
 
   @IsNumber()
   @IsOptional()
-  price: number;
+  price?: number;
 
   @IsNumber()
   @IsOptional()
-  quantity: number;
+  quantity?: number;
 
   @IsNumber()
   @IsOptional()
-  discount: number;
+  discount?: number;
 
   @IsString()
   @IsOptional()
   @MinLength(2, { message: 'product name should be at least 2 character' })
   @MaxLength(70, { message: 'name too long!' })
-  brand: string;
+  brand?: string;
 
   @IsString()
   @IsOptional()
-  description: string;
+  description?: string;
 
   @IsObject()
   @IsOptional()
-  rating: Rating;
+  rating?: Rating;
 
   @IsArray()
   @IsOptional()
-  images: string[];
+  images?: string[];
 
   @IsString()
   @IsOptional()
-  thumbnail: string;
+  thumbnail?: string;
 }

@@ -119,7 +119,7 @@ describe('SubcategoriesService', () => {
     it('should throw ConflictException if subcategory name already exists', async () => {
       categoriesRepository.findById.mockResolvedValue(mockCategory);
 
-      subcategoriesRepository.exists.mockResolvedValueOnce(true);
+      subcategoriesRepository.exists.mockResolvedValue(true);
 
       await expect(service.create(mockCreateDto)).rejects.toThrow(
         ConflictException,
