@@ -6,7 +6,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import slugify from 'slugify';
-import { Category } from 'src/categories/schema/categories.schema';
+import { Category } from '../../categories/schema/categories.schema';
 
 export type SubCategoryDocument = SubCategory & Document;
 

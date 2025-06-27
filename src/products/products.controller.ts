@@ -15,16 +15,16 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guard/roles.guard';
-import { UserRole } from 'src/auth/dto/auth-credentials.dto';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { RolesGuard } from '../auth/guard/roles.guard';
+import { UserRole } from '../auth/dto/auth-credentials.dto';
 import { Product } from './schema/products.schema';
 import { CreateProductDto } from './dto/create-product.dto';
 import { FindAllResponse } from './models/findAll-response.model';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { multerOption } from 'src/config/multer.config';
+import { multerOption } from '../config/multer.config';
 
 @Controller('products')
 export class ProductsController {

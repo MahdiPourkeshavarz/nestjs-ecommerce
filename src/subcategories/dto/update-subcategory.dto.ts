@@ -24,8 +24,4 @@ export class UpdateSubCategoryDto {
   @MinLength(2)
   @MaxLength(100)
   slugname?: string;
-
-  @IsOptional()
-  @IsString()
-  icon?: string;
 }

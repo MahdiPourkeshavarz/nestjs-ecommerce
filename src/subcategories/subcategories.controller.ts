@@ -14,10 +14,10 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { SubCategoriesService } from './subcategories.service';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guard/roles.guard';
-import { UserRole } from 'src/auth/dto/auth-credentials.dto';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { RolesGuard } from '../auth/guard/roles.guard';
+import { UserRole } from '../auth/dto/auth-credentials.dto';
 import { CreateSubCategoryDto } from './dto/create-subcategory.dto';
 import { SubCategory } from './schema/subcategories.schema';
 import { UpdateSubCategoryDto } from './dto/update-subcategory.dto';
