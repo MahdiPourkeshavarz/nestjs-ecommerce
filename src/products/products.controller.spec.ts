@@ -129,11 +129,20 @@ describe('ProductsController', () => {
 
   describe('findAll', () => {
     it('should call this method on service and return all products', async () => {
-      const productList = {
+      const products = {
         products: [createdProduct, anotherCreatedProduct],
       };
 
-      mockProductsService.findAll.mockResolvedValue(productList);
+      const paginatedFindAllResult = {
+        status: 'success',
+        page: 1,
+        per_page: 10,
+        total: 2,
+        total_pages: 1,
+        data: { products },
+      };
+
+      mockProductsService.findAll.mockResolvedValue(paginatedFindAllResult);
 
       const res = await controller.findAll();
 
@@ -141,7 +150,7 @@ describe('ProductsController', () => {
       expect(res).toEqual({
         status: 'success',
         data: {
-          products: productList,
+          products,
         },
       });
     });

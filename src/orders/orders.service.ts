@@ -7,14 +7,13 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { ProductsRepository } from 'src/products/product.repository';
-import { UsersRepository } from 'src/users/users.repository';
+import { ProductsRepository } from '../products/product.repository';
+import { UsersRepository } from '../users/users.repository';
 import { OrdersRepository } from './orders.repository';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Order } from './schema/orders.schema';
 import { FindAllResponse } from './models/findAll-response.model';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { Product } from 'src/products/schema/products.schema';
 
 @Injectable()
 export class OrdersService {
@@ -89,8 +88,12 @@ export class OrdersService {
   }
 
   async update(id: string, updateOrderDto: UpdateOrderDto): Promise<Order> {
-    const user = await this.userRepository.findById(updateOrderDto.user);
-    const order = await this.orderRepository.findById(updateOrderDto.user);
+    const user = await this.userRepository.findById(
+      updateOrderDto.user as string,
+    );
+    const order = await this.orderRepository.findById(
+      updateOrderDto.user as string,
+    );
     if (!user || !order) {
       throw new NotFoundException('not found');
     }

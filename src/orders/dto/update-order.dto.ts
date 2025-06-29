@@ -16,19 +16,19 @@ export class UpdateOrderDto {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  user: string;
+  user?: string;
 
   @IsArray()
   @ArrayNotEmpty()
   @ValidateNested({ each: true })
   @IsOptional()
-  readonly products: ProductInOrderDto[];
+  readonly products?: ProductInOrderDto[];
 
   @IsDate()
   @IsOptional()
-  deliveryDate: Date;
+  deliveryDate?: Date;
 
   @IsBoolean()
   @IsOptional()
-  deliveryStatus: boolean;
+  deliveryStatus?: boolean;
 }
