@@ -2,7 +2,7 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Schema as MongooseSchema } from 'mongoose';
-import { Product } from 'src/products/schema/products.schema';
+import { Product } from '../../products/schema/products.schema';
 
 @Schema({ _id: false })
 export class ProductsInOrder {
