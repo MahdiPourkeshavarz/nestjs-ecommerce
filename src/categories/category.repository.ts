@@ -20,8 +20,13 @@ export class CategoriesRepository {
     return await newCategory.save();
   }
 
-  async findAll(): Promise<CategoryDocument[]> {
-    return await this.categoryModel.find({});
+  async findAll(): Promise<{ categories: CategoryDocument[]; total: number }> {
+    const categories = await this.categoryModel.find({});
+    const total = await this.categoryModel.countDocuments();
+    return {
+      categories,
+      total,
+    };
   }
 
   async findById(id: string): Promise<CategoryDocument | null> {

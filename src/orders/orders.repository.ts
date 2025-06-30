@@ -60,7 +60,7 @@ export class OrdersRepository {
       .populate(['user', 'products.product']);
   }
 
-  async exist(filterQuery: FilterQuery<OrderDocument>): Promise<boolean> {
+  async exists(filterQuery: FilterQuery<OrderDocument>): Promise<boolean> {
     const count = await this.orderModel.countDocuments(filterQuery);
     return count > 0;
   }
