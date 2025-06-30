@@ -13,13 +13,13 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { CategoriesService } from './categories.service';
+import { CategoriesService, FindAllResponse } from './categories.service';
 import { Category } from './schema/categories.schema';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guard/roles.guard';
-import { UserRole } from 'src/auth/dto/auth-credentials.dto';
-import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { RolesGuard } from '../auth/guard/roles.guard';
+import { UserRole } from '../auth/dto/auth-credentials.dto';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('categories')
 export class CategoriesController {
@@ -45,7 +45,7 @@ export class CategoriesController {
   @Get()
   async findAll(): Promise<{
     status: string;
-    data: { categories: Category[] };
+    data: { categories: FindAllResponse };
   }> {
     const categories = await this.categoriesService.findAll();
     return { status: 'success', data: { categories } };

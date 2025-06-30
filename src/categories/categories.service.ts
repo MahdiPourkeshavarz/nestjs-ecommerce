@@ -1,4 +1,6 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
@@ -13,6 +15,15 @@ import slugify from 'slugify';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { Category, CategoryDocument } from './schema/categories.schema';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+
+export interface FindAllResponse {
+  status: 'success';
+  page: number;
+  per_page: number;
+  total: number;
+  total_pages: number;
+  data: { categories: Category[] };
+}
 
 @Injectable()
 export class CategoriesService {
@@ -53,14 +64,21 @@ export class CategoriesService {
     }
   }
 
-  async findAll(): Promise<Category[]> {
-    const categoriesDocs: CategoryDocument[] =
-      await this.categoriesRepository.findAll();
+  async findAll(): Promise<FindAllResponse> {
+    const { categories, total } = await this.categoriesRepository.findAll();
 
-    return categoriesDocs.map((doc: CategoryDocument) => {
-      const plainCategoryObject = doc.toObject();
-      return plainCategoryObject as Category;
+    const sanitizedCategories = categories.map((category: CategoryDocument) => {
+      return category.toObject();
     });
+
+    return {
+      status: 'success',
+      page: 1,
+      total_pages: 1,
+      per_page: 10,
+      total,
+      data: { categories: sanitizedCategories },
+    };
   }
 
   async findOneById(id: string): Promise<Category> {
