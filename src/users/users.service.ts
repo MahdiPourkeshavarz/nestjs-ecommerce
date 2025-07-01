@@ -165,7 +165,7 @@ export class UsersService {
     const sanitizedUsername = username.toLocaleLowerCase();
     const userDoc =
       await this.usersRepository.findByUsername(sanitizedUsername);
-    return userDoc.toObject();
+    return userDoc;
   }
 
   async updateUserRefreshToken(

@@ -142,6 +142,7 @@ export class UsersRepository {
   async findByUsername(username: string): Promise<UserDocument> {
     return this.userModel
       .findOne({ username })
+      .select('+password')
       .exec() as unknown as UserDocument;
   }
 }

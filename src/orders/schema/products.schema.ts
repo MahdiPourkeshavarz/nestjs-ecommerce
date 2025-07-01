@@ -6,7 +6,7 @@ import { Product } from '../../products/schema/products.schema';
 
 @Schema({ _id: false })
 export class ProductsInOrder {
-  @Prop({ type: MongooseSchema.Types.ObjectId, required: true })
+  @Prop({ type: MongooseSchema.Types.ObjectId, required: true, ref: 'Product' })
   product: Product;
 
   @Prop({ type: Number, required: true })
