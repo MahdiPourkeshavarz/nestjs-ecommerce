@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
@@ -100,6 +101,12 @@ export class ProductsService {
         throw new InternalServerErrorException(
           'Failed to retrieve the created product.',
         );
+      }
+
+      const productObject = finalProduct.toObject();
+
+      if (productObject.subcategory && productObject.subcategory.category) {
+        delete productObject.subcategory.category;
       }
       return finalProduct;
     } catch (error) {

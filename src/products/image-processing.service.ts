@@ -3,7 +3,7 @@
 import { Injectable } from '@nestjs/common';
 import { join } from 'path';
 import * as fs from 'fs';
-import sharp from 'sharp';
+import * as sharp from 'sharp';
 
 @Injectable()
 export class ImageProcessingService {
@@ -34,12 +34,12 @@ export class ImageProcessingService {
     const thumbnailFileName = `products-${productId}-${Date.now()}.jpeg`;
     const outputPath = join(
       process.cwd(),
-      'public/images/products/thumbnails',
+      'public/images/products/thumbnail',
       thumbnailFileName,
     );
 
     await sharp(file.buffer)
-      .resize(1500, 800)
+      .resize(800, 800, { fit: 'fill' })
       .toFormat('jpeg')
       .jpeg({ quality: 95 })
       .toFile(outputPath);
@@ -66,7 +66,7 @@ export class ImageProcessingService {
           .toFormat('webp')
           .webp({ lossless: true })
           .toFile(outputPath);
-        return imageFilename; 
+        return imageFilename;
       }),
     );
     return resizedImages;

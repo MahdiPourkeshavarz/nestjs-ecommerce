@@ -9,12 +9,15 @@ import { ProductsRepository } from './product.repository';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { SubcategoriesModule } from 'src/subcategories/subcategories.module';
 import { ImageProcessingService } from './image-processing.service';
+import { MulterModule } from '@nestjs/platform-express';
+import { multerOption } from 'src/config/multer.config';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }]),
     CategoriesModule,
     SubcategoriesModule,
+    MulterModule.register(multerOption),
   ],
   controllers: [ProductsController],
   providers: [ProductsService, ProductsRepository, ImageProcessingService],

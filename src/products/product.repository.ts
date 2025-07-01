@@ -16,13 +16,19 @@ export class ProductsRepository {
   async create(createProductDto: CreateProductDto): Promise<ProductDocument> {
     const newProduct = new this.productModel(createProductDto);
     await newProduct.save();
-    return await newProduct.populate(['category', 'subcategory']);
+    return await newProduct.populate([
+      { path: 'category' },
+      { path: 'subcategory', select: '-category' },
+    ]);
   }
 
   async findAll(): Promise<{ products: ProductDocument[]; total: number }> {
     const products = await this.productModel
       .find({})
-      .populate(['category', 'subcategory'])
+      .populate([
+        { path: 'category' },
+        { path: 'subcategory', select: '-category' },
+      ])
       .exec();
     const total = await this.productModel.countDocuments();
     return {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -12,7 +13,11 @@ export const multerOption = {
     fileSize: 1024 * 1024 * 5,
   },
   fileFilter: (req: any, file: any, cb: any) => {
-    if (file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+    if (!file) {
+      return cb(null, true);
+    }
+
+    if (file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
       cb(null, true);
     } else {
       cb(
