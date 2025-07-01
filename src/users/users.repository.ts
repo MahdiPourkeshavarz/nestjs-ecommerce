@@ -1,7 +1,8 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schema/users.schema';
@@ -136,5 +137,11 @@ export class UsersRepository {
       { _id: userId },
       { $set: { hashedRefreshToken } },
     );
+  }
+
+  async findByUsername(username: string): Promise<UserDocument> {
+    return this.userModel
+      .findOne({ username })
+      .exec() as unknown as UserDocument;
   }
 }

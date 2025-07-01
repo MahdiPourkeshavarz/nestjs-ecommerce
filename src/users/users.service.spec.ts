@@ -7,7 +7,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { PaginatedUsersResult, UsersService } from './users.service';
+import { UsersService } from './users.service';
 import { UsersRepository } from './users.repository';
 import {
   InternalServerErrorException,
@@ -23,6 +23,7 @@ const mockUserRepository = () => ({
   findByIdAndUpdate: jest.fn(),
   findByIdAndDelete: jest.fn(),
   exists: jest.fn(),
+  findByUsername: jest.fn(),
 });
 
 const createUserDto = {

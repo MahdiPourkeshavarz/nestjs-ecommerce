@@ -161,6 +161,13 @@ export class UsersService {
     return result as User;
   }
 
+  async findByUsername(username: string): Promise<User> {
+    const sanitizedUsername = username.toLocaleLowerCase();
+    const userDoc =
+      await this.usersRepository.findByUsername(sanitizedUsername);
+    return userDoc.toObject();
+  }
+
   async updateUserRefreshToken(
     userId: string,
     refreshTokenValue: string | null,
